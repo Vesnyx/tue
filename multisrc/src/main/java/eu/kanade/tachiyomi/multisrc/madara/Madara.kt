@@ -450,12 +450,12 @@ abstract class Madara(
 
     protected class GenreConditionFilter(title: String, options: Array<String>) : UriPartFilter(
         title,
-        options.zip(arrayOf("", "1")).toTypedArray(),
+        options.zip(arrayOf("", "1")).toTypedArray()
     )
 
     protected class AdultContentFilter(title: String, options: Array<String>) : UriPartFilter(
         title,
-        options.zip(arrayOf("", "0", "1")).toTypedArray(),
+        options.zip(arrayOf("", "0", "1")).toTypedArray()
     )
 
     protected class GenreList(title: String, genres: List<Genre>) : Filter.Group<Genre>(title, genres)
@@ -470,7 +470,7 @@ abstract class Madara(
             OrderByFilter(
                 title = orderByFilterTitle,
                 options = orderByFilterOptions.zip(orderByFilterOptionsValues),
-                state = 0,
+                state = 0
             ),
             AdultContentFilter(adultContentFilterTitle, adultContentFilterOptions)
         )
