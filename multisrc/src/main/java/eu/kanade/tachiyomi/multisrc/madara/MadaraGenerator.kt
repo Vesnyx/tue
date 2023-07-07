@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.multisrc.madara
 
-import generator.ThemeSourceData.MultiLang
 import generator.ThemeSourceData.SingleLang
 import generator.ThemeSourceGenerator
 
@@ -13,7 +12,7 @@ class MadaraGenerator : ThemeSourceGenerator {
     override val baseVersionCode: Int = 1
 
     override val sources = listOf(
-        SingleLang("Reset Scans", "https://reset-scans.com", "en"),
+        SingleLang("Reset Scans", "https://reset-scans.com", "en")
     )
 
     companion object {

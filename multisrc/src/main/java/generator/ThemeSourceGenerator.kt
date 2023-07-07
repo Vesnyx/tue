@@ -58,7 +58,7 @@ interface ThemeSourceGenerator {
             val additionalGradleOverrideText = File(additionalGradleOverridePath).readTextOrEmptyString()
             val placeholders = mapOf(
                 "SOURCEHOST" to source.baseUrl.toHttpUrlOrNull()?.host,
-                "SOURCESCHEME" to source.baseUrl.toHttpUrlOrNull()?.scheme,
+                "SOURCESCHEME" to source.baseUrl.toHttpUrlOrNull()?.scheme
             )
 
             val placeholdersStr = placeholders
@@ -92,7 +92,7 @@ interface ThemeSourceGenerator {
                 |        ]
                 |    }
                 |}
-                """.trimMargin(),
+                """.trimMargin()
             )
         }
 
@@ -109,7 +109,7 @@ interface ThemeSourceGenerator {
                     |<?xml version="1.0" encoding="utf-8"?>
                     |<!-- THIS FILE IS AUTO-GENERATED; DO NOT EDIT -->
                     |<manifest package="eu.kanade.tachiyomi.extension" />
-                    """.trimMargin(),
+                    """.trimMargin()
                 )
             }
         }
@@ -158,7 +158,7 @@ interface ThemeSourceGenerator {
                         Files.copy(
                             File("$path/$it").toPath(),
                             File("$projectRootPath/$it").toPath(),
-                            StandardCopyOption.REPLACE_EXISTING,
+                            StandardCopyOption.REPLACE_EXISTING
                         )
                     }
             }
@@ -229,7 +229,7 @@ interface ThemeSourceGenerator {
                 |${if (source is ThemeSourceData.MultiLang) "import eu.kanade.tachiyomi.source.SourceFactory" else ""}
                 |
                 |${factoryClassText()}
-                """.trimMargin(),
+                """.trimMargin()
             )
         }
     }
@@ -268,7 +268,7 @@ sealed class ThemeSourceData {
         override val className: String = name.replace(" ", ""),
         override val pkgName: String = className.lowercase(Locale.ENGLISH),
         override val sourceName: String = name,
-        override val overrideVersionCode: Int = 0,
+        override val overrideVersionCode: Int = 0
     ) : ThemeSourceData()
 
     data class MultiLang(
@@ -279,7 +279,7 @@ sealed class ThemeSourceData {
         override val className: String = name.replace(" ", "") + "Factory",
         override val pkgName: String = className.substringBefore("Factory").lowercase(Locale.ENGLISH),
         override val sourceName: String = name,
-        override val overrideVersionCode: Int = 0,
+        override val overrideVersionCode: Int = 0
     ) : ThemeSourceData()
 }
 
