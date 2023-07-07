@@ -1,20 +1,24 @@
 plugins {
     id("com.android.library")
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
+    kotlin("android")
+    id("kotlinx-serialization")
 }
 
 android {
     compileSdk = AndroidConfig.compileSdk
-    namespace = "eu.kanade.tachiyomi.lib.themesources"
 
     defaultConfig {
         minSdk = 29
+        targetSdk = AndroidConfig.targetSdk
     }
 
     kotlinOptions {
         freeCompilerArgs += "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 configurations {
@@ -25,43 +29,31 @@ configurations {
 
 dependencies {
     compileOnly(libs.bundles.common)
+
+    // Implements all :lib libraries on the multisrc generator
+    // Note that this does not mean that generated sources are going to
+    // implement them too; this is just to be able to compile and generate sources.
+    rootProject.subprojects
+        .filter { it.path.startsWith(":lib") }
+        .forEach(::implementation)
 }
 
 tasks {
-    val generateExtensions by registering {
-        doLast {
-            val isWindows = System.getProperty("os.name").toString().toLowerCase().contains("win")
-            var classPath = (
-                    configurations.compileOnly.get().asFileTree.toList() +
-                    listOf(
-                        configurations.androidApis.get().asFileTree.first().absolutePath, // android.jar path
-                        "$projectDir/build/intermediates/aar_main_jar/debug/classes.jar" // jar made from this module
-                    ))
-                .joinToString(if (isWindows) ";" else ":")
+    register<JavaExec>("generateExtensions") {
+        classpath = configurations.compileOnly.get() +
+            configurations.androidApis.get() + // android.jar path
+            files("$buildDir/intermediates/aar_main_jar/debug/classes.jar") // jar made from this module
+        mainClass.set("generator.GeneratorMainKt")
 
-            var javaPath = "${System.getProperty("java.home")}/bin/java"
+        workingDir = workingDir.parentFile // project root
 
-            val mainClass = "generator.GeneratorMainKt" // Main class we want to execute
+        errorOutput = System.out // for GitHub workflow commands
 
-            if (isWindows) {
-                classPath = classPath.replace("/", "\\")
-                javaPath = javaPath.replace("/", "\\")
-            }
-
-            val javaProcess = ProcessBuilder()
-                .directory(null).command(javaPath, "-classpath", classPath, mainClass)
-                .redirectErrorStream(true).start()
-
-            javaProcess.inputStream
-                .bufferedReader()
-                .forEachLine(logger::info)
-
-            val exitCode = javaProcess.waitFor()
-            if (exitCode != 0) {
-                throw Exception("Java process failed with exit code: $exitCode")
-            }
+        if (!logger.isInfoEnabled) {
+            standardOutput = org.gradle.internal.io.NullOutputStream.INSTANCE
         }
-        dependsOn("ktFormat", "ktLint", "assembleDebug")
+
+        dependsOn("ktLint", "assembleDebug")
     }
 
     register<org.jmailen.gradle.kotlinter.tasks.LintTask>("ktLint") {

@@ -1,19 +1,3 @@
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        google()
-        maven(url = "https://jitpack.io")
-    }
-}
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
-
 include(":core")
 
 File(rootDir, "lib").eachDir {
