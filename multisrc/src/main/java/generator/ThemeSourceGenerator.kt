@@ -69,11 +69,9 @@ interface ThemeSourceGenerator {
             gradle.writeText(
                 """
                 |// THIS FILE IS AUTO-GENERATED; DO NOT EDIT
-                |plugins {
-                |    alias(libs.plugins.android.application)
-                |    alias(libs.plugins.kotlin.android)
-                |    alias(libs.plugins.kotlin.serialization)
-                |}
+                |apply plugin: 'com.android.application'
+                |apply plugin: 'kotlin-android'
+                |apply plugin: 'kotlinx-serialization'
                 |
                 |ext {
                 |    extName = '${source.name}'
@@ -110,13 +108,13 @@ interface ThemeSourceGenerator {
                     """
                     |<?xml version="1.0" encoding="utf-8"?>
                     |<!-- THIS FILE IS AUTO-GENERATED; DO NOT EDIT -->
-                    |<manifest />
+                    |<manifest package="eu.kanade.tachiyomi.extension" />
                     """.trimMargin(),
                 )
             }
         }
 
-        private fun createGradleProject(source: ThemeSourceData, themePkg: String, themeClass: String, baseVersionCode: Int, userDir: String) {
+        fun createGradleProject(source: ThemeSourceData, themePkg: String, themeClass: String, baseVersionCode: Int, userDir: String) {
             // userDir = tachiyomi-extensions project root path
             val projectRootPath = "$userDir/generated-src/${pkgNameSuffix(source, "/")}"
             val projectSrcPath = "$projectRootPath/src/eu/kanade/tachiyomi/extension/${pkgNameSuffix(source, "/")}"
@@ -134,9 +132,9 @@ interface ThemeSourceGenerator {
             File(projectRootPath).let { projectRootFile ->
                 println("Generating $source")
 
-                projectRootFile.mkdirs()
                 // remove everything from past runs
-                cleanDirectory(projectRootFile)
+                projectRootFile.deleteRecursively()
+                projectRootFile.mkdirs()
 
                 writeGradle(projectGradleFile, source, themePkg, baseVersionCode, defaultAdditionalGradlePath, additionalGradleOverridePath)
                 writeAndroidManifest(projectAndroidManifestFile, manifestOverridePath, defaultAndroidManifestPath)
@@ -173,7 +171,7 @@ interface ThemeSourceGenerator {
             File(themeDestPath).mkdirs()
 
             File(themeSrcPath).list()
-                ?.filter { it.endsWith(".kt") && !it.endsWith("Generator.kt") }
+                ?.filter { it.endsWith(".kt") && !it.endsWith("Generator.kt") && !it.endsWith("Gen.kt") }
                 ?.forEach { Files.copy(File("$themeSrcPath/$it").toPath(), File("$themeDestPath/$it").toPath(), StandardCopyOption.REPLACE_EXISTING) }
         }
 
@@ -233,15 +231,6 @@ interface ThemeSourceGenerator {
                 |${factoryClassText()}
                 """.trimMargin(),
             )
-        }
-
-        private fun cleanDirectory(dir: File) {
-            dir.listFiles()?.forEach {
-                if (it.isDirectory) {
-                    cleanDirectory(it)
-                }
-                it.delete()
-            }
         }
     }
 }

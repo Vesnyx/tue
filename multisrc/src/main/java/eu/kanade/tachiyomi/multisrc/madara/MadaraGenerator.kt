@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.multisrc.madara
 
+import generator.ThemeSourceData.MultiLang
 import generator.ThemeSourceData.SingleLang
 import generator.ThemeSourceGenerator
 
