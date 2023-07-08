@@ -119,7 +119,6 @@ jobs:
     name: Publish repo
     needs:
       - build_multisrc
-      - build_individual
     runs-on: ubuntu-latest
     steps:
       - name: Download APK artifacts
