@@ -13,8 +13,7 @@ class MadaraGenerator : ThemeSourceGenerator {
     override val baseVersionCode: Int = 30
 
     override val sources = listOf(
-        MultiLang("Reaper Scans", "https://reaperscans.com", listOf("fr", "tr"), className = "ReaperScansFactory", pkgName = "reaperscans", overrideVersionCode = 12),
-        SingleLang("1st Kiss Manga.love", "https://1stkissmanga.love", "en", className = "FirstKissMangaLove", overrideVersionCode = 2),
+        SingleLang("Reset Scans", "https://reset-scans.com", "en"),
     )
 
     companion object {
