@@ -114,11 +114,54 @@ jobs:
 
       - name: Clean up CI files
         run: rm signingkey.jks
+  
+  build_individual:
+    name: Build individual modules
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.prepare.outputs.individualMatrix) }}
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: adopt
+
+      - name: Prepare signing key
+        run: |
+          echo ${{ secrets.SIGNING_KEY }} | base64 -d > signingkey.jks
+
+      - name: Build extensions (chunk ${{ matrix.chunk }})
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI_MULTISRC: "false"
+          CI_CHUNK_NUM: ${{ matrix.chunk }}
+          ALIAS: ${{ secrets.ALIAS }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        with:
+          arguments: assembleRelease
+
+      - name: Upload APKs (chunk ${{ matrix.chunk }})
+        uses: actions/upload-artifact@v3
+        if: "github.repository == 'tachiyomiorg/tachiyomi-extensions'"
+        with:
+          name: "individual-apks-${{ matrix.chunk }}"
+          path: "**/*.apk"
+          retention-days: 1
+
+      - name: Clean up CI files
+        run: rm signingkey.jks
 
   publish_repo:
     name: Publish repo
     needs:
       - build_multisrc
+      - build_individual
     runs-on: ubuntu-latest
     steps:
       - name: Download APK artifacts

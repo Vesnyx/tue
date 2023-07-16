@@ -406,6 +406,6 @@ class ReaperScans : ParsedHttpSource() {
     companion object {
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
         const val PREFIX_ID_SEARCH = "id:"
-        private val tunstile by lazy { Regex("""set\s*\(\s*\"([^"]*)""") }
+        private val tunstile by lazy { Regex("""find\s*\(\s*\'(.*)\'""") }
     }
 }
