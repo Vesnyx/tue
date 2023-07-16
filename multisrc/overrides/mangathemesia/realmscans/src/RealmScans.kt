@@ -1,16 +1,36 @@
 package eu.kanade.tachiyomi.extension.en.realmscans
 
+import android.app.Application
+import android.content.SharedPreferences
+import androidx.preference.PreferenceScreen
+import androidx.preference.SwitchPreferenceCompat
 import eu.kanade.tachiyomi.multisrc.mangathemesia.MangaThemesia
 import eu.kanade.tachiyomi.network.interceptor.rateLimit
+import eu.kanade.tachiyomi.source.model.FilterList
+import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
+import eu.kanade.tachiyomi.source.model.SChapter
+import eu.kanade.tachiyomi.source.model.SManga
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import okhttp3.Headers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import org.jsoup.nodes.Document
+import rx.Observable
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", "/series") {
 
+    private val preferences = Injekt.get<Application>().getSharedPreferences("source_$id", 0x0000)
+
     override val client: OkHttpClient = super.client.newBuilder()
+        .addInterceptor(::urlChangeInterceptor)
+        .addInterceptor(uaIntercept)
         .rateLimit(1, 1, TimeUnit.SECONDS)
         .build()
 
