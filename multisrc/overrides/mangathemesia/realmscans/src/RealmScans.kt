@@ -110,6 +110,17 @@ class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", 
         return this
     }
 
+    private fun SManga.titleToUrlFrag(): SManga {
+        return try {
+            this.apply {
+                url = "$url#${title.toSearchQuery()}"
+            }
+        } catch (e: UninitializedPropertyAccessException) {
+            // when called from deep link, title is not present
+            this
+        }
+    }
+
     private fun urlChangeInterceptor(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
