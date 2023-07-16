@@ -17,7 +17,7 @@ class MangaThemesiaGenerator : ThemeSourceGenerator {
         MultiLang("Asura Scans", "https://www.asurascans.com", listOf("en", "tr"), className = "AsuraScansFactory", pkgName = "asurascans", overrideVersionCode = 23),
         MultiLang("Flame Scans", "https://flamescans.org", listOf("en"), className = "FlameScansFactory", pkgName = "flamescans", overrideVersionCode = 4),
         SingleLang("Luminous Scans", "https://www.luminousscans.com", "en"),
-        SingleLang("Realm Scans", "https://realmscans.com", "en"),
+        SingleLang("Realm Scans", "https://realmscans.xyz", "en"),
     )
 
     companion object {
