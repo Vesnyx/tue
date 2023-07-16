@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit
 
 class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", "/series") {
 
-
     override val client: OkHttpClient = super.client.newBuilder()
         .rateLimit(1, 1, TimeUnit.SECONDS)
         .build()
@@ -23,5 +22,4 @@ class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", 
             .distinctBy { it.imageUrl }
             .mapIndexed { i, page -> Page(i, imageUrl = page.imageUrl) }
     }
-
 }
