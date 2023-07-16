@@ -6,6 +6,8 @@ import eu.kanade.tachiyomi.source.model.Page
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", "/series", dateFormat = SimpleDateFormat("d MMM yyyy", Locale.US)) {
