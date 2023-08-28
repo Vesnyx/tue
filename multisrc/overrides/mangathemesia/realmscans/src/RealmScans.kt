@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.xyz", "en", "/series", dateFormat = SimpleDateFormat("d MMM yyyy", Locale.US)) {
+class RealmScans : MangaThemesia("Realm Scans", "https://realmscans.to", "en", "/series", dateFormat = SimpleDateFormat("d MMM yyyy", Locale.US)) {
 
     override val client: OkHttpClient = super.client.newBuilder()
         .rateLimit(1, 1, TimeUnit.SECONDS)
